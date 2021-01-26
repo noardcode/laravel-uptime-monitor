@@ -5,6 +5,7 @@ namespace Noardcode\LaravelUptimeMonitor\Models;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\TransferStats;
 use Illuminate\Database\Eloquent\Model;
 use Noardcode\LaravelUptimeMonitor\Events\MonitorAvailable;
 use Noardcode\LaravelUptimeMonitor\Events\MonitorRestored;
@@ -64,6 +65,22 @@ class Monitor extends Model
     public function requestFailed(ConnectException $connectException)
     {
         $this->monitorUnavailable($connectException->getMessage());
+    }
+
+    /**
+     * @param TransferStats $stats
+     */
+    public function receivedStats(TransferStats $stats)
+    {
+        MonitorStatistic::create([
+            'monitor_id' => $this->id,
+            'total_time' => $stats->getHandlerStat('total_time'),
+            'namelookup_time' => $stats->getHandlerStat('namelookup_time'),
+            'connect_time' => $stats->getHandlerStat('connect_time'),
+            'pretransfer_time' => $stats->getHandlerStat('pretransfer_time'),
+            'starttransfer_time' => $stats->getHandlerStat('starttransfer_time'),
+            'redirect_time' => $stats->getHandlerStat('redirect_time'),
+        ]);
     }
 
     /**

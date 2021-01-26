@@ -30,6 +30,7 @@ class LaravelUptimeMonitorServiceProvider extends ServiceProvider
             // Migrations.
             $migrations = [
                 'create_monitors_table.php',
+                'create_monitor_statistics_table.php',
             ];
             foreach ($migrations as $migrationFilename) {
                 if (!$this->migrationFileExists($migrationFilename)) {

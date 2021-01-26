@@ -5,6 +5,7 @@ namespace Noardcode\LaravelUptimeMonitor\Services;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\TransferStats;
 use Noardcode\LaravelUptimeMonitor\Collections\MonitorsCollection;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -36,9 +37,7 @@ class ConcurrentRequestsService
     {
         $requests = function ($monitors) { // Generator function.
             for ($i = 0; $i < $monitors->count(); $i++) {
-                yield new Request('GET', $monitors[$i]->url, [
-
-                ]);
+                yield new Request('GET', $monitors[$i]->url);
             }
         };
 
@@ -48,6 +47,15 @@ class ConcurrentRequestsService
                 $monitors[$index]->requestSucceeded($response);
                 (new ConsoleOutput())->writeln($monitors[$index]->url . ': Available');
             },
+            'options' => [
+                'on_stats' => function (TransferStats $stats) use ($monitors) {
+                    foreach ($monitors as $monitor) {
+                        if ($monitor->url == (string) $stats->getEffectiveUri()) {
+                            $monitor->receivedStats($stats);
+                        }
+                    }
+                }
+            ],
             'rejected' => function ($connectException, $index) use ($monitors) {
                 $monitors[$index]->requestFailed($connectException);
                 (new ConsoleOutput())->writeln($monitors[$index]->url . ': Unavailable');
