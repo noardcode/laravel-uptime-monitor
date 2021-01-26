@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\TransferStats;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Noardcode\LaravelUptimeMonitor\Events\MonitorAvailable;
 use Noardcode\LaravelUptimeMonitor\Events\MonitorRestored;
 use Noardcode\LaravelUptimeMonitor\Events\MonitorUnavailable;
@@ -45,6 +46,14 @@ class Monitor extends Model
     public function newCollection(array $models = []): MonitorsCollection
     {
         return new MonitorsCollection($models);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function statistics()
+    {
+        return $this->hasMany(MonitorStatistic::class);
     }
 
     /**
