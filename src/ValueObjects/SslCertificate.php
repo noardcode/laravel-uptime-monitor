@@ -57,7 +57,7 @@ Class SslCertificate
      */
     public function getIssuerCommonName(): string
     {
-        return $this->issuer['CN'];
+        return $this->issuer['O'];
     }
 
     /**
