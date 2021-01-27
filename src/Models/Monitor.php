@@ -12,6 +12,7 @@ use Noardcode\LaravelUptimeMonitor\Events\MonitorAvailable;
 use Noardcode\LaravelUptimeMonitor\Events\MonitorRestored;
 use Noardcode\LaravelUptimeMonitor\Events\MonitorUnavailable;
 use Noardcode\LaravelUptimeMonitor\Collections\MonitorsCollection;
+use Noardcode\LaravelUptimeMonitor\ValueObjects\SslCertificate;
 
 /**
  * Class Monitor
@@ -29,6 +30,7 @@ class Monitor extends Model
      */
     protected $dates = [
         'checked_at',
+        'ssl_checked_at',
     ];
 
     /**
@@ -74,6 +76,32 @@ class Monitor extends Model
     public function requestFailed(ConnectException $connectException)
     {
         $this->monitorUnavailable($connectException->getMessage());
+    }
+
+    /**
+     * @param SslCertificate $certificate
+     */
+    public function certificateReceived(SslCertificate $certificate)
+    {
+        $this->ssl_status = 'up';
+        $this->ssl_issuer = $certificate->getIssuerCommonName();
+        $this->ssl_valid_from = $certificate->getValidFrom();
+        $this->ssl_valid_to = $certificate->getValidTo();
+        $this->ssl_checked_at = Carbon::now();
+        $this->save();
+    }
+
+    /**
+     * @param SslCertificate $certificate
+     */
+    public function certificateFailed(SslCertificate $certificate)
+    {
+        $this->ssl_status = 'down';
+        $this->ssl_issuer = null;
+        $this->ssl_valid_from = null;
+        $this->ssl_valid_to = null;
+        $this->ssl_checked_at = Carbon::now();
+        $this->save();
     }
 
     /**

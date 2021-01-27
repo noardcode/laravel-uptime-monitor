@@ -1,8 +1,10 @@
 # NoardCode Laravel Uptime Monitor
 The NoardCode Laravel Uptime Monitor package provides a simple tool for monitoring 
-the status of any number of URLs. Add URLs to the monitoring queue and receive
-events when the URL is checked. The package uses concurrent requests to speed up
-the monitoring.
+the status of any number of URLs and it's SSL certificates.
+Add URLs to the monitoring queue and receive
+events when the URL or it's SSL certificate is checked. 
+The package uses concurrent
+requests to speed up the monitoring.
 
 ### Installation
 This package can be installed as every other composer dependency.
@@ -24,14 +26,15 @@ Migrate the database.
 php artisan migrate
 ```
 
-Add the monitoring console command to your /app/Console/Kernel.php and make
-sure it gets called every minute (request interval can be configured in the
+Add the monitoring console commands to your /app/Console/Kernel.php and make
+sure it gets called every minute (request intervals can be configured in the
 configuration file).
 
 ```
 protected function schedule(Schedule $schedule)
 {
     $schedule->command('uptime-monitor:run')->everyMinute();
+    $schedule->command('uptime-monitor:ssl-check')->everyMinute();
 }
 ```
 

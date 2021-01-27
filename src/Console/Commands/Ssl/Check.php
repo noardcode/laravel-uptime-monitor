@@ -1,40 +1,41 @@
 <?php
 
-namespace Noardcode\LaravelUptimeMonitor\Console\Commands\UptimeMonitor;
+namespace Noardcode\LaravelUptimeMonitor\Console\Commands\Ssl;
 
-use GuzzleHttp\Client;
-use Noardcode\LaravelUptimeMonitor\Services\ConcurrentRequestsService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 use Noardcode\LaravelUptimeMonitor\Models\Monitor;
 use Noardcode\LaravelUptimeMonitor\Repositories\Monitors;
+use Noardcode\LaravelUptimeMonitor\Services\SslService;
 
 /**
- * Class RunMonitor
+ * Class Check
  * @package Noardcode\LaravelUptimeMonitor\Console\Commands
  */
-class Run extends Command
+class Check extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'uptime-monitor:run';
+    protected $signature = 'uptime-monitor:ssl-check';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Start monitoring the given monitors.';
+    protected $description = 'Retrieve SSL information of the monitors.';
 
     /**
      * @var Monitors
      */
     protected Monitors $monitors;
 
-    protected ConcurrentRequestsService $monitorService;
+    /**
+     * @var SslService
+     */
+    protected SslService $sslService;
 
     /**
      * Create a new command instance.
@@ -52,12 +53,10 @@ class Run extends Command
     public function handle()
     {
         $monitors = Monitor::all();
-        $monitorsToRun = $monitors->getMonitorsToRun(config('laravel-uptime-monitor.interval'));
+        $monitorsToRun = $monitors->getMonitorsToRun(config('laravel-uptime-monitor.ssl-interval'), true);
         $monitorsToRun = $monitorsToRun->values();
 
-        $client = new Client(config('laravel-uptime-monitor.client'));
-
-        $concurrentRequestsService = new ConcurrentRequestsService($client);
-        $concurrentRequestsService->doRequests($monitorsToRun, config('laravel-uptime-monitor.concurrency'));
+        $sslService = new SslService();
+        $sslService->getCertificate($monitorsToRun);
     }
 }

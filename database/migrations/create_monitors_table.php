@@ -23,6 +23,11 @@ class CreateMonitorsTable extends Migration
             $table->string('status')->nullable();
             $table->string('down_reason')->nullable();
             $table->timestamp('checked_at')->nullable();
+            $table->string('ssl_status')->nullable();
+            $table->string('ssl_issuer')->nullable();
+            $table->timestamp('ssl_valid_from')->nullable();
+            $table->timestamp('ssl_valid_to')->nullable();
+            $table->timestamp('ssl_checked_at')->nullable();
             $table->timestamps();
         });
     }

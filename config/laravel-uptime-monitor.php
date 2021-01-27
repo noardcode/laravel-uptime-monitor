@@ -11,6 +11,12 @@ return [
     'interval' => env('LARAVEL_UPTIME_MONITOR_INTERVAL', 5),
 
     /**
+     * The time in minutes between now and the last SSL check.
+     * When this time has passed a new uptime check will be performed.
+     */
+    'ssl-interval' => env('LARAVEL_UPTIME_MONITOR_INTERVAL', 1440),
+
+    /**
      * The amount of concurrent HTTP requests that will be performed by the client.
      */
     'concurrency' => env('LARAVEL_UPTIME_MONITOR_CONCURRENCY', 10),
