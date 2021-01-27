@@ -4,6 +4,7 @@ namespace Noardcode\LaravelUptimeMonitor\Models;
 
 use Carbon\Carbon;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\TransferStats;
 use Illuminate\Database\Eloquent\Model;
@@ -71,9 +72,9 @@ class Monitor extends Model
     }
 
     /**
-     * @param ConnectException $connectException
+     * @param RequestException $connectException
      */
-    public function requestFailed(ConnectException $connectException)
+    public function requestFailed(RequestException $connectException)
     {
         $this->monitorUnavailable($connectException->getMessage());
     }
