@@ -9,6 +9,7 @@ use Noardcode\LaravelUptimeMonitor\Console\Commands\UptimeMonitor\Disable;
 use Noardcode\LaravelUptimeMonitor\Console\Commands\UptimeMonitor\Enable;
 use Noardcode\LaravelUptimeMonitor\Console\Commands\UptimeMonitor\Run;
 use Noardcode\LaravelUptimeMonitor\Console\Commands\UptimeMonitor\Show;
+use Noardcode\LaravelUptimeMonitor\Console\Commands\Ssl\Check;
 
 /**
  * Class LaravelUptimeMonitorServiceProvider
@@ -55,7 +56,8 @@ class LaravelUptimeMonitorServiceProvider extends ServiceProvider
             Enable::class,
             Disable::class,
             Show::class,
-            Run::class
+            Run::class,
+            Check::class,
         ]);
     }
 
